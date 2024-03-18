@@ -1,7 +1,6 @@
 package com.example.store.service.impl;
 
 import com.example.store.entity.Stock;
-import com.example.store.entity.Store;
 import com.example.store.exception.RecordNotFoundException;
 import com.example.store.mapper.StockMapper;
 import com.example.store.model.Product;
@@ -97,7 +96,7 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
-    public void consumeProductsFromStocks(List<Product> products) {
+    public Boolean consumeProductsFromStocks(List<Product> products) {
 
         List<Stock> validProducts = new ArrayList<>();
         List<Product> invalidProducts = new ArrayList<>();
@@ -124,6 +123,25 @@ public class StockServiceImpl implements StockService {
             log.warn("Products not valid to consumed" + invalidProducts);
             throw new RecordNotFoundException("Products not valid to consumed" + invalidProducts);
         }
+        return true;
+    }
+
+    @Override
+    public List<ProductConsumption> getProductConsumptions() {
+        List<ProductConsumption> productConsumptions ;
+        // Get this data from product service
+        String resourceUrl = "http://localhost:8083/consumptions";
+        ParameterizedTypeReference<List<ProductConsumption>> typeReference = new ParameterizedTypeReference<List<ProductConsumption>>() {};
+        ResponseEntity<List<ProductConsumption>> responseEntity = restTemplate.exchange(
+                resourceUrl,
+                HttpMethod.GET,
+                null,
+                typeReference);
+
+        productConsumptions = responseEntity.getBody();
+        log.info("productsConsumptions: " + productConsumptions);
+        // I will return it to display in ui.
+        return productConsumptions;
     }
 
     public List<Stock> getListOfStocksThatContainsProduct(Product product){
@@ -134,19 +152,10 @@ public class StockServiceImpl implements StockService {
                 .stream()
                 .filter(stock -> stock.getQuantity()-stock.getConsumedQuantity() >= quantity)
                 .collect(Collectors.toList());
-        log.info("find Stocks By ProductCode: " + productCode + ", And valid Quantity: "+ quantity);
+        log.info("find Stocks By ProductCode: " + productCode + ", And Quantity: "+ quantity);
         return stocks;
     }
 
-    public List<Product> getListOfProducts(String resourceUrl){
-        ParameterizedTypeReference<List<Product>> typeReference = new ParameterizedTypeReference<List<Product>>() {};
-        ResponseEntity<List<Product>> responseEntity = restTemplate.exchange(
-                resourceUrl,
-                HttpMethod.GET,
-                null,
-                typeReference);
 
-        return responseEntity.getBody();
-    }
 
 }

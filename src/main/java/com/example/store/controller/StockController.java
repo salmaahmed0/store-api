@@ -7,56 +7,44 @@ import com.example.store.model.StockDTO;
 import com.example.store.service.StockService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/stocks")
+@RequestMapping("/api")
 public class StockController {
     @Autowired
     StockService stockService;
 
-    @GetMapping
+    @GetMapping("/stocks")
     public List<StockDTO> getStocks(){
         return stockService.findAll();
     }
 
-    @PostMapping
+    @PostMapping("/stocks")
     public String  addStock(@RequestBody StockDTO stockDTO){
         return stockService.save(stockDTO);
     }
 
-    @GetMapping("/{productCode}")
+    @GetMapping("/stocks/{productCode}")
     public List<StockDTO> searchProduct(@PathVariable String productCode){
         return stockService.findAllByProductCodeContainingIgnoreCase(productCode);
     }
 
-    @GetMapping("/validate-products")
-    public List<ResponseValidateProduct> validateProducts(){
-
-        String resourceUrl = "http://localhost:8083/stocks/validate-products";
-        List<Product> products = stockService.getListOfProducts(resourceUrl);
-        List<ResponseValidateProduct> validateProducts = stockService.validateProducts(products);
-        log.info("Valid Products : " + validateProducts);
-
-        return validateProducts;
+    @PostMapping("/stocks/validate-products")
+    public List<ResponseValidateProduct> validateProducts(@RequestBody List<Product> products){
+        return stockService.validateProducts(products);
     }
 
-    @GetMapping("/consume")
-    public String consumeStock(){
-        String resourceUrl = "http://localhost:8083/stocks/consume-products";
-        List<Product> products = stockService.getListOfProducts(resourceUrl);
-        stockService.consumeProductsFromStocks(products);
-        log.info("Product consumed from stock");
-        return "Product consumed from stock";
+    @PostMapping("/stocks/consume")
+    public String consumeStock(@RequestBody List<Product> products){
+        return stockService.consumeProductsFromStocks(products)? "Products consumed from stock" : "Not valid products";
     }
 
-
+    @GetMapping("/consumptions")
+    public List<ProductConsumption> getConsumptions(){
+        return stockService.getProductConsumptions();
+    }
 }

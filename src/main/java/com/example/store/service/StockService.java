@@ -17,6 +17,7 @@ public interface StockService {
 
     List<ResponseValidateProduct> validateProducts(List<Product> products);
 
-    void consumeProductsFromStocks(List<Product> products);
-    List<Product> getListOfProducts(String resourceUrl);
+    Boolean consumeProductsFromStocks(List<Product> products);
+
+    List<ProductConsumption> getProductConsumptions();
 }
