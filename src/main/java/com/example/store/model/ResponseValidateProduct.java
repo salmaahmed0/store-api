@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ResponseValidateProduct {
+    
     private String productCode;
     private boolean valid;
 }

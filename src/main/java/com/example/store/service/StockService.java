@@ -1,6 +1,5 @@
 package com.example.store.service;
 
-import com.example.store.entity.Stock;
 import com.example.store.model.Product;
 import com.example.store.model.ProductConsumption;
 import com.example.store.model.ResponseValidateProduct;
