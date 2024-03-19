@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface StoreService {
     List<StoreDTO> findAll();
-    String save(Store store);
+    String save(StoreDTO storeDTO);
 }

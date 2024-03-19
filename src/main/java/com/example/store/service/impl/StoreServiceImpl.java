@@ -38,12 +38,13 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
-    public String save(Store store) {
+    public String save(StoreDTO storeDTO) {
 
-        if(storeRepository.findByName(store.getName()).isPresent()){
+        if(storeRepository.findByName(storeDTO.getName()).isPresent()){
             log.error("This store is already exist!");
             throw new ConflictException("This store is already exist!");
         }
+        Store store = storeMapper.toEntity(storeDTO);
         storeRepository.save(store);
         log.info("New Store Created!");
         return "New Store Created!";

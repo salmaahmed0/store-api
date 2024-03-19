@@ -5,6 +5,7 @@ import com.example.store.model.ProductConsumption;
 import com.example.store.model.ResponseValidateProduct;
 import com.example.store.model.StockDTO;
 import com.example.store.service.StockService;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +25,7 @@ public class StockController {
     }
 
     @PostMapping("/stocks")
-    public String  addStock(@RequestBody StockDTO stockDTO){
+    public String  addStock(@RequestBody @Valid StockDTO stockDTO){
         return stockService.save(stockDTO);
     }
 
@@ -34,12 +35,12 @@ public class StockController {
     }
 
     @PostMapping("/stocks/validate-products")
-    public List<ResponseValidateProduct> validateProducts(@RequestBody List<Product> products){
+    public List<ResponseValidateProduct> validateProducts(@RequestBody @Valid List<Product> products){
         return stockService.validateProducts(products);
     }
 
     @PostMapping("/stocks/consume")
-    public String consumeStock(@RequestBody List<Product> products){
+    public String consumeStock(@RequestBody @Valid List<Product> products){
         return stockService.consumeProductsFromStocks(products)? "Products consumed from stock" : "Not valid products";
     }
 

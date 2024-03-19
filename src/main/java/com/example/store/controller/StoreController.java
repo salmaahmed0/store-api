@@ -3,6 +3,7 @@ package com.example.store.controller;
 import com.example.store.entity.Store;
 import com.example.store.model.*;
 import com.example.store.service.StoreService;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -23,8 +24,8 @@ public class StoreController {
     }
 
     @PostMapping
-    public String createStore(@RequestBody Store store){
-        return storeService.save(store);
+    public String createStore(@RequestBody @Valid StoreDTO storeDTO){
+        return storeService.save(storeDTO);
     }
 
 }

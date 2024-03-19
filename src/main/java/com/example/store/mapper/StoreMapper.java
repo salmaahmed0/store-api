@@ -6,6 +6,7 @@ import com.example.store.model.StoreDTO;
 
 public interface StoreMapper {
 
+    Store toEntity(StoreDTO storeDTO);
     StoreDTO toDTO(Store store);
 
 }

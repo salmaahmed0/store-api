@@ -10,6 +10,19 @@ import org.springframework.stereotype.Component;
 @Data
 public class StoreMapperImpl implements StoreMapper {
 
+
+    @Override
+    public Store toEntity(StoreDTO storeDTO) {
+
+        Store store = new Store();
+        store.setName(storeDTO.getName());
+        store.setPhoneNumber(storeDTO.getPhoneNumber());
+        store.setCity(storeDTO.getCity());
+        store.setStocks(null);
+
+        return store;
+    }
+
     @Override
     public StoreDTO toDTO(Store store) {
 
