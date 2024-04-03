@@ -1,8 +1,7 @@
 package com.example.store.service;
 
-import com.example.store.model.Product;
-import com.example.store.model.ProductConsumption;
-import com.example.store.model.ResponseValidateProduct;
+import com.example.store.model.ProductDTO;
+import com.example.store.model.ResponseValidateProductDTO;
 import com.example.store.model.StockDTO;
 
 import java.util.List;
@@ -14,9 +13,8 @@ public interface StockService {
 
     String save(StockDTO stockDTO);
 
-    List<ResponseValidateProduct> validateProducts(List<Product> products);
+    List<ResponseValidateProductDTO> validateProducts(List<ProductDTO> productDTOS);
 
-    Boolean consumeProductsFromStocks(List<Product> products);
+    Boolean consumeProductsFromStocks(List<ProductDTO> productDTOS);
 
-    List<ProductConsumption> getProductConsumptions();
 }

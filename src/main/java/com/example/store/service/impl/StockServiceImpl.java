@@ -3,21 +3,14 @@ package com.example.store.service.impl;
 import com.example.store.entity.Stock;
 import com.example.store.exception.RecordNotFoundException;
 import com.example.store.mapper.StockMapper;
-import com.example.store.model.Product;
-import com.example.store.model.ProductConsumption;
-import com.example.store.model.ResponseValidateProduct;
+import com.example.store.model.ProductDTO;
+import com.example.store.model.ResponseValidateProductDTO;
 import com.example.store.model.StockDTO;
 import com.example.store.repository.StockRepository;
 import com.example.store.service.StockService;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,8 +18,6 @@ import java.util.stream.Collectors;
 
 
 @Service
-@AllArgsConstructor
-@NoArgsConstructor
 @Slf4j
 public class StockServiceImpl implements StockService {
 
@@ -35,8 +26,6 @@ public class StockServiceImpl implements StockService {
     private StockRepository stockRepository;
     @Autowired
     private StockMapper stockMapper;
-    @Autowired
-    RestTemplate restTemplate;
 
     @Override
     public List<StockDTO> findAll() {
@@ -77,17 +66,17 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
-    public List<ResponseValidateProduct> validateProducts(List<Product> products) {
-        List<ResponseValidateProduct> validateProducts = new ArrayList<>() ;
+    public List<ResponseValidateProductDTO> validateProducts(List<ProductDTO> productDTOS) {
+        List<ResponseValidateProductDTO> validateProducts = new ArrayList<>() ;
 
-        for(Product product : products){
-            ResponseValidateProduct validateProduct = new ResponseValidateProduct();
-            List<Stock> stocks = getListOfStocksThatContainsProduct(product);
+        for(ProductDTO productDTO : productDTOS){
+            ResponseValidateProductDTO validateProduct = new ResponseValidateProductDTO();
+            List<Stock> stocks = getListOfStocksThatContainsProduct(productDTO);
             if (!stocks.isEmpty()){
-                validateProduct.setProductCode(product.getProductCode());
+                validateProduct.setProductCode(productDTO.getProductCode());
                 validateProduct.setValid(true);
             } else {
-                validateProduct.setProductCode(product.getProductCode());
+                validateProduct.setProductCode(productDTO.getProductCode());
                 validateProduct.setValid(false);
             }
             validateProducts.add(validateProduct);
@@ -96,57 +85,40 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
-    public Boolean consumeProductsFromStocks(List<Product> products) {
+    public Boolean consumeProductsFromStocks(List<ProductDTO> productDTOS) {
 
         List<Stock> validProducts = new ArrayList<>();
-        List<Product> invalidProducts = new ArrayList<>();
+        List<ProductDTO> invalidProductDTOS = new ArrayList<>();
 
-        for (Product product: products){
-            List<Stock> stocks =getListOfStocksThatContainsProduct(product);
+        for (ProductDTO productDTO : productDTOS){
+            List<Stock> stocks =getListOfStocksThatContainsProduct(productDTO);
             log.info("Stocks: "+ stocks);
             if (!stocks.isEmpty()){
                 validProducts.add(stocks.get(0));
             }else {
-                invalidProducts.add(product);
+                invalidProductDTOS.add(productDTO);
             }
         }
-        if(invalidProducts.isEmpty()){
+        if(invalidProductDTOS.isEmpty()){
             int i=0;
             for (Stock validProduct: validProducts){
                 int consumedQuantity =  validProduct.getConsumedQuantity();
-                validProduct.setConsumedQuantity(consumedQuantity+products.get(i).getQuantity());
+                validProduct.setConsumedQuantity(consumedQuantity+ productDTOS.get(i).getQuantity());
                 stockRepository.save(validProduct);
                 log.info(validProduct + " consumed");
                 i++;
             }
         }else {
-            log.warn("Products not valid to consumed" + invalidProducts);
-            throw new RecordNotFoundException("Products not valid to consumed" + invalidProducts);
+            log.warn("Products not valid to consumed" + invalidProductDTOS);
+            throw new RecordNotFoundException("Products not valid to consumed" + invalidProductDTOS);
         }
         return true;
     }
 
-    @Override
-    public List<ProductConsumption> getProductConsumptions() {
-        List<ProductConsumption> productConsumptions ;
-        // Get this data from product service
-        String resourceUrl = "http://localhost:8083/consumptions";
-        ParameterizedTypeReference<List<ProductConsumption>> typeReference = new ParameterizedTypeReference<List<ProductConsumption>>() {};
-        ResponseEntity<List<ProductConsumption>> responseEntity = restTemplate.exchange(
-                resourceUrl,
-                HttpMethod.GET,
-                null,
-                typeReference);
 
-        productConsumptions = responseEntity.getBody();
-        log.info("productsConsumptions: " + productConsumptions);
-        // I will return it to display in ui.
-        return productConsumptions;
-    }
-
-    public List<Stock> getListOfStocksThatContainsProduct(Product product){
-        String productCode = product.getProductCode();
-        int quantity = product.getQuantity();
+    public List<Stock> getListOfStocksThatContainsProduct(ProductDTO productDTO){
+        String productCode = productDTO.getProductCode();
+        int quantity = productDTO.getQuantity();
 
         List<Stock> stocks = stockRepository.findAllByProductCodeContainingIgnoreCase(productCode)
                 .stream()

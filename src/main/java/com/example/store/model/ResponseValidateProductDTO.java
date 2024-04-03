@@ -7,8 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ResponseValidateProduct {
-    
+public class ResponseValidateProductDTO {
     private String productCode;
     private boolean valid;
 }
