@@ -1,8 +1,9 @@
 package com.example.store.controller;
 
-import com.example.store.model.ProductDTO;
-import com.example.store.model.ResponseValidateProductDTO;
-import com.example.store.model.StockDTO;
+import com.example.store.model.other.ValidateProductRequestDTO;
+import com.example.store.model.other.ValidateProductResponseDTO;
+import com.example.store.model.stock.StockRequestDTO;
+import com.example.store.model.stock.StockResponseDTO;
 import com.example.store.service.StockService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -19,27 +20,27 @@ public class StockController {
     StockService stockService;
 
     @GetMapping
-    public List<StockDTO> getStocks(){
+    public List<StockResponseDTO> getStocks(){
         return stockService.findAll();
     }
 
     @PostMapping
-    public String  addStock(@RequestBody @Valid StockDTO stockDTO){
-        return stockService.save(stockDTO);
+    public String  addStock(@RequestBody @Valid StockRequestDTO stockRequestDTO){
+        return stockService.save(stockRequestDTO);
     }
 
     @GetMapping("/{productCode}")
-    public List<StockDTO> searchProduct(@PathVariable String productCode){
+    public List<StockResponseDTO> searchProduct(@PathVariable String productCode){
         return stockService.findAllByProductCodeContainingIgnoreCase(productCode);
     }
 
     @PostMapping("/validate-products")
-    public List<ResponseValidateProductDTO> validateProducts(@RequestBody @Valid List<ProductDTO> productDTOS){
+    public List<ValidateProductResponseDTO> validateProducts(@RequestBody @Valid List<ValidateProductRequestDTO> productDTOS){
         return stockService.validateProducts(productDTOS);
     }
 
     @PostMapping("/consume")
-    public String consumeStock(@RequestBody @Valid List<ProductDTO> productDTOS){
+    public String consumeStock(@RequestBody @Valid List<ValidateProductRequestDTO> productDTOS){
         return stockService.consumeProductsFromStocks(productDTOS)? "Products consumed from stock" : "Not valid products";
     }
 

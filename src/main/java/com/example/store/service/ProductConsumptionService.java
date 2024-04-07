@@ -1,6 +1,6 @@
 package com.example.store.service;
 
-import com.example.store.model.ProductConsumptionDTO;
+import com.example.store.model.other.ProductConsumptionDTO;
 
 import java.util.List;
 

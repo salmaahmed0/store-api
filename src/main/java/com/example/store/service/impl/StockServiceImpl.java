@@ -3,10 +3,12 @@ package com.example.store.service.impl;
 import com.example.store.entity.Stock;
 import com.example.store.exception.RecordNotFoundException;
 import com.example.store.mapper.StockMapper;
-import com.example.store.model.ProductDTO;
-import com.example.store.model.ResponseValidateProductDTO;
-import com.example.store.model.StockDTO;
+import com.example.store.model.other.ValidateProductRequestDTO;
+import com.example.store.model.other.ValidateProductResponseDTO;
+import com.example.store.model.stock.StockRequestDTO;
+import com.example.store.model.stock.StockResponseDTO;
 import com.example.store.repository.StockRepository;
+import com.example.store.repository.StoreRepository;
 import com.example.store.service.StockService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,41 +24,46 @@ import java.util.stream.Collectors;
 public class StockServiceImpl implements StockService {
 
     @Autowired
-
     private StockRepository stockRepository;
     @Autowired
     private StockMapper stockMapper;
+    @Autowired
+    StoreRepository storeRepository;
 
     @Override
-    public List<StockDTO> findAll() {
-        List<StockDTO> stockDTOS = stockRepository.findAll()
+    public List<StockResponseDTO> findAll() {
+        List<StockResponseDTO> stockResponseDTOs = stockRepository.findAll()
                 .stream()
                 .map(stockMapper::toDTO)
                 .collect(Collectors.toList());
-        if(stockDTOS.isEmpty()){
+        if(stockResponseDTOs.isEmpty()){
             log.error("There is no stocks");
             throw new RecordNotFoundException("There is no stocks");
         }
-        return stockDTOS;
+        return stockResponseDTOs;
     }
 
     @Override
-    public List<StockDTO> findAllByProductCodeContainingIgnoreCase(String productCode) {
-        List<StockDTO> stockDTOS =  stockRepository.findAllByProductCodeContainingIgnoreCase(productCode)
+    public List<StockResponseDTO> findAllByProductCodeContainingIgnoreCase(String productCode) {
+        List<StockResponseDTO> stockResponseDTOs =  stockRepository.findAllByProductCodeContainingIgnoreCase(productCode)
                 .stream()
                 .map(stockMapper::toDTO)
                 .collect(Collectors.toList());
-        if(stockDTOS.isEmpty()){
+        if(stockResponseDTOs.isEmpty()){
             log.error("No matched stock with productCode: " + productCode);
             throw new RecordNotFoundException("No matched stock with productCode: " + productCode);
         }
-        return stockDTOS;
+        return stockResponseDTOs;
     }
 
     @Override
-    public String save(StockDTO stockDTO) {
+    public String save(StockRequestDTO stockRequestDTO) {
 
-        Stock stock = stockMapper.toEntity(stockDTO);
+        if(!storeRepository.findById(stockRequestDTO.getStoreId()).isPresent()){
+            throw new RecordNotFoundException("You can't add stock in store with id: " + stockRequestDTO.getStoreId() + ", it's not exist!");
+        }
+
+        Stock stock = stockMapper.toEntity(stockRequestDTO);
         List<Stock> stocks = stock.getStore().getStocks();
         stockRepository.save(stock);
         stocks.add(stock);
@@ -66,11 +73,11 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
-    public List<ResponseValidateProductDTO> validateProducts(List<ProductDTO> productDTOS) {
-        List<ResponseValidateProductDTO> validateProducts = new ArrayList<>() ;
+    public List<ValidateProductResponseDTO> validateProducts(List<ValidateProductRequestDTO> productDTOS) {
+        List<ValidateProductResponseDTO> validateProducts = new ArrayList<>() ;
 
-        for(ProductDTO productDTO : productDTOS){
-            ResponseValidateProductDTO validateProduct = new ResponseValidateProductDTO();
+        for(ValidateProductRequestDTO productDTO : productDTOS){
+            ValidateProductResponseDTO validateProduct = new ValidateProductResponseDTO();
             List<Stock> stocks = getListOfStocksThatContainsProduct(productDTO);
             if (!stocks.isEmpty()){
                 validateProduct.setProductCode(productDTO.getProductCode());
@@ -85,12 +92,12 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
-    public Boolean consumeProductsFromStocks(List<ProductDTO> productDTOS) {
+    public Boolean consumeProductsFromStocks(List<ValidateProductRequestDTO> productDTOS) {
 
         List<Stock> validProducts = new ArrayList<>();
-        List<ProductDTO> invalidProductDTOS = new ArrayList<>();
+        List<ValidateProductRequestDTO> invalidProductDTOS = new ArrayList<>();
 
-        for (ProductDTO productDTO : productDTOS){
+        for (ValidateProductRequestDTO productDTO : productDTOS){
             List<Stock> stocks =getListOfStocksThatContainsProduct(productDTO);
             log.info("Stocks: "+ stocks);
             if (!stocks.isEmpty()){
@@ -116,7 +123,7 @@ public class StockServiceImpl implements StockService {
     }
 
 
-    public List<Stock> getListOfStocksThatContainsProduct(ProductDTO productDTO){
+    public List<Stock> getListOfStocksThatContainsProduct(ValidateProductRequestDTO productDTO){
         String productCode = productDTO.getProductCode();
         int quantity = productDTO.getQuantity();
 

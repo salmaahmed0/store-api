@@ -1,20 +1,21 @@
 package com.example.store.service;
 
-import com.example.store.model.ProductDTO;
-import com.example.store.model.ResponseValidateProductDTO;
-import com.example.store.model.StockDTO;
+import com.example.store.model.other.ValidateProductRequestDTO;
+import com.example.store.model.other.ValidateProductResponseDTO;
+import com.example.store.model.stock.StockRequestDTO;
+import com.example.store.model.stock.StockResponseDTO;
 
 import java.util.List;
 
 public interface StockService {
 
-    List<StockDTO> findAll();
-    List<StockDTO> findAllByProductCodeContainingIgnoreCase(String productCode);
+    List<StockResponseDTO> findAll();
+    List<StockResponseDTO> findAllByProductCodeContainingIgnoreCase(String productCode);
 
-    String save(StockDTO stockDTO);
+    String save(StockRequestDTO stockRequestDTO);
 
-    List<ResponseValidateProductDTO> validateProducts(List<ProductDTO> productDTOS);
+    List<ValidateProductResponseDTO> validateProducts(List<ValidateProductRequestDTO> productDTOS);
 
-    Boolean consumeProductsFromStocks(List<ProductDTO> productDTOS);
+    Boolean consumeProductsFromStocks(List<ValidateProductRequestDTO> productDTOS);
 
 }

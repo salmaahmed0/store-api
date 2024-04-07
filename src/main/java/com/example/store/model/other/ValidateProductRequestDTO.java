@@ -1,4 +1,4 @@
-package com.example.store.model;
+package com.example.store.model.other;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProductDTO {
+public class ValidateProductRequestDTO {
     @NotBlank(message = "product code is mandatory")
     private String productCode;
     @Positive

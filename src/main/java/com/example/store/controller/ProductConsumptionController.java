@@ -1,6 +1,6 @@
 package com.example.store.controller;
 
-import com.example.store.model.ProductConsumptionDTO;
+import com.example.store.model.other.ProductConsumptionDTO;
 import com.example.store.service.ProductConsumptionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
