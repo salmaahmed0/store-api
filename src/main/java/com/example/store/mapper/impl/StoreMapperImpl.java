@@ -2,7 +2,8 @@ package com.example.store.mapper.impl;
 
 import com.example.store.entity.Store;
 import com.example.store.mapper.StoreMapper;
-import com.example.store.model.StoreDTO;
+import com.example.store.model.store.StoreRequestDTO;
+import com.example.store.model.store.StoreResponseDTO;
 import lombok.Data;
 import org.springframework.stereotype.Component;
 
@@ -12,25 +13,26 @@ public class StoreMapperImpl implements StoreMapper {
 
 
     @Override
-    public Store toEntity(StoreDTO storeDTO) {
+    public Store toEntity(StoreRequestDTO storeRequestDTO) {
 
         Store store = new Store();
-        store.setName(storeDTO.getName());
-        store.setPhoneNumber(storeDTO.getPhoneNumber());
-        store.setCity(storeDTO.getCity());
+        store.setName(storeRequestDTO.getName());
+        store.setPhoneNumber(storeRequestDTO.getPhoneNumber());
+        store.setCity(storeRequestDTO.getCity());
         store.setStocks(null);
 
         return store;
     }
 
     @Override
-    public StoreDTO toDTO(Store store) {
+    public StoreResponseDTO toDTO(Store store) {
 
-        StoreDTO storeDTO = new StoreDTO();
-        storeDTO.setName(store.getName());
-        storeDTO.setCity(store.getCity());
-        storeDTO.setPhoneNumber(store.getPhoneNumber());
+        StoreResponseDTO storeResponseDTO = new StoreResponseDTO();
+        storeResponseDTO.setId(store.getId());
+        storeResponseDTO.setName(store.getName());
+        storeResponseDTO.setCity(store.getCity());
+        storeResponseDTO.setPhoneNumber(store.getPhoneNumber());
 
-        return storeDTO;
+        return storeResponseDTO;
     }
 }

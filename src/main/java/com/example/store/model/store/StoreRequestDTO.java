@@ -1,10 +1,10 @@
-package com.example.store.model;
+package com.example.store.model.store;
 
 import jakarta.validation.constraints.*;
 import lombok.Data;
 
 @Data
-public class StoreDTO {
+public class StoreRequestDTO {
     @NotBlank(message = "Name is mandatory")
     private String name;
     @NotBlank(message = "Phone number is mandatory")

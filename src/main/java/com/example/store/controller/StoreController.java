@@ -1,7 +1,7 @@
 package com.example.store.controller;
 
-import com.example.store.entity.Store;
-import com.example.store.model.*;
+import com.example.store.model.store.StoreRequestDTO;
+import com.example.store.model.store.StoreResponseDTO;
 import com.example.store.service.StoreService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -19,13 +19,18 @@ public class StoreController {
     StoreService storeService;
 
     @GetMapping
-    public List<StoreDTO> getStores(){
+    public List<StoreResponseDTO> getStores(){
         return storeService.findAll();
     }
 
     @PostMapping
-    public String createStore(@RequestBody @Valid StoreDTO storeDTO){
-        return storeService.save(storeDTO);
+    public String createStore(@RequestBody @Valid StoreRequestDTO storeRequestDTO){
+        return storeService.save(storeRequestDTO);
+    }
+
+    @GetMapping("/{storeName}")
+    public StoreResponseDTO getStoreByName(@PathVariable String storeName){
+        return storeService.findByName(storeName);
     }
 
 }
