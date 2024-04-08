@@ -9,5 +9,7 @@ public interface StoreService {
     List<StoreResponseDTO> findAll();
     String save(StoreRequestDTO storeRequestDTO);
     StoreResponseDTO findByName(String storeName);
+    String updateStore(StoreResponseDTO storeResponseDTO);
+    String deleteStore(long id);
 
 }

@@ -62,4 +62,23 @@ public class StoreServiceImpl implements StoreService {
 
         return storeMapper.toDTO(store);
     }
+
+    @Override
+    public String updateStore(StoreResponseDTO storeResponseDTO) {
+        Store store = storeRepository.findById(storeResponseDTO.getId())
+                .orElseThrow(() -> new RecordNotFoundException("You can't update not exist store with id: " + storeResponseDTO.getId() ));
+        store.setName(storeResponseDTO.getName());
+        store.setCity(storeResponseDTO.getCity());
+        store.setPhoneNumber(storeResponseDTO.getPhoneNumber());
+        storeRepository.save(store);
+        return "Store with id: " + storeResponseDTO.getId() + ", updated successfully!";
+    }
+
+    @Override
+    public String deleteStore(long id) {
+        Store store = storeRepository.findById(id)
+                .orElseThrow(() -> new RecordNotFoundException("You can't delete not exist store with id: " + id));
+        storeRepository.delete(store);
+        return "Store with id: " + id + ", deleted successfully!";
+    }
 }

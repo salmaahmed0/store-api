@@ -33,4 +33,14 @@ public class StoreController {
         return storeService.findByName(storeName);
     }
 
+    @PutMapping
+    public String updateStore(@RequestBody StoreResponseDTO storeResponseDTO){
+        return storeService.updateStore(storeResponseDTO);
+    }
+
+    @DeleteMapping("/{storeId}")
+    public String deleteStore(@PathVariable long storeId){
+        return storeService.deleteStore(storeId);
+    }
+
 }
