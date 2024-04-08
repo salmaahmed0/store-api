@@ -14,6 +14,10 @@ public interface StockService {
 
     String save(StockRequestDTO stockRequestDTO);
 
+    String updateStock(StockResponseDTO stockResponseDTO);
+
+    String deleteStock(long id);
+
     List<ValidateProductResponseDTO> validateProducts(List<ValidateProductRequestDTO> productDTOS);
 
     Boolean consumeProductsFromStocks(List<ValidateProductRequestDTO> productDTOS);

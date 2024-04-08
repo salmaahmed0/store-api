@@ -1,6 +1,7 @@
 package com.example.store.service.impl;
 
 import com.example.store.entity.Stock;
+import com.example.store.entity.Store;
 import com.example.store.exception.RecordNotFoundException;
 import com.example.store.mapper.StockMapper;
 import com.example.store.model.other.ValidateProductRequestDTO;
@@ -70,6 +71,32 @@ public class StockServiceImpl implements StockService {
         log.info("stock saved: "+ stock);
 
         return "New Stock added";
+    }
+
+    @Override
+    public String updateStock(StockResponseDTO stockResponseDTO) {
+        Stock stock = stockRepository.findById(stockResponseDTO.getStockId())
+                .orElseThrow(()-> new RecordNotFoundException("You can't update stock not exist with id: "+ stockResponseDTO.getStockId()));
+        stock.setProductCode(stockResponseDTO.getProductCode());
+        stock.setQuantity(stockResponseDTO.getQuantity());
+        stock.setConsumedQuantity(stockResponseDTO.getConsumedQuantity());
+        stock.setCreationDate(stockResponseDTO.getCreationDate());
+
+        Store store = storeRepository.findById(stockResponseDTO.getStoreId())
+                .orElseThrow(()-> new RecordNotFoundException("Store with id: " +
+                        stockResponseDTO.getStockId() +
+                        " Not found, you can't add stock on it"));
+        stock.setStore(store);
+        stockRepository.save(stock);
+        return "Stock with id: " + stockResponseDTO.getStockId() + " updated Successfully!";
+    }
+
+    @Override
+    public String deleteStock(long id) {
+        Stock stock = stockRepository.findById(id)
+                .orElseThrow(()-> new RecordNotFoundException("Stock with id: " + id + " not found, you can't delete it!"));
+        stockRepository.delete(stock);
+        return "Stock with id: "+ id + " deleted successfully!";
     }
 
     @Override

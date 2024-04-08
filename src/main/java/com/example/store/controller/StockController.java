@@ -29,9 +29,19 @@ public class StockController {
         return stockService.save(stockRequestDTO);
     }
 
+    @PutMapping
+    public String updateStock(@RequestBody StockResponseDTO stockResponseDTO){
+        return stockService.updateStock(stockResponseDTO);
+    }
+
     @GetMapping("/{productCode}")
     public List<StockResponseDTO> searchProduct(@PathVariable String productCode){
         return stockService.findAllByProductCodeContainingIgnoreCase(productCode);
+    }
+
+    @DeleteMapping("/{stockId}")
+    public String deleteStock(@PathVariable long stockId){
+        return stockService.deleteStock(stockId);
     }
 
     @PostMapping("/validate-products")
