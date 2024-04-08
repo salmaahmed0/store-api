@@ -1,13 +1,11 @@
 package com.example.store.controller;
 
-import com.example.store.model.other.ProductConsumptionDTO;
+import com.example.store.model.productConsumption.ProductConsumptionDTO;
+import com.example.store.model.productConsumption.ProductOrderDTO;
 import com.example.store.service.ProductConsumptionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -26,5 +24,13 @@ public class ProductConsumptionController {
     public List<ProductConsumptionDTO> getProductConsumptions(@PathVariable String code){
         return productConsumptionService.getProductConsumptions(code);
     }
+    @GetMapping("/product-order")
+    public ProductConsumptionDTO getProductOrder(@RequestBody ProductOrderDTO productOrderDTO){
+        return productConsumptionService.getProductInOrder(productOrderDTO);
+    }
 
+    @GetMapping("/order-product")
+    public void deleteProductConsumptionRecord(@RequestBody ProductOrderDTO productOrderDTO){
+        productConsumptionService.deleteRecord(productOrderDTO);
+    }
 }

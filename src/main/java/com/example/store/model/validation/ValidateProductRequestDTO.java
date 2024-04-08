@@ -1,4 +1,4 @@
-package com.example.store.model.other;
+package com.example.store.model.validation;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;

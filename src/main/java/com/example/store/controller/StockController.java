@@ -1,7 +1,7 @@
 package com.example.store.controller;
 
-import com.example.store.model.other.ValidateProductRequestDTO;
-import com.example.store.model.other.ValidateProductResponseDTO;
+import com.example.store.model.validation.ValidateProductRequestDTO;
+import com.example.store.model.validation.ValidateProductResponseDTO;
 import com.example.store.model.stock.StockRequestDTO;
 import com.example.store.model.stock.StockResponseDTO;
 import com.example.store.service.StockService;

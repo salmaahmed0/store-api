@@ -1,10 +1,12 @@
 package com.example.store.service.impl;
 
-import com.example.store.model.other.ProductConsumptionDTO;
+import com.example.store.model.productConsumption.ProductConsumptionDTO;
+import com.example.store.model.productConsumption.ProductOrderDTO;
 import com.example.store.service.ProductConsumptionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -48,6 +50,27 @@ public class ProductConsumptionServiceImpl implements ProductConsumptionService 
         List<ProductConsumptionDTO> productConsumptionDTOs = responseEntity.getBody();
         log.info("product Consumptions: " + productConsumptionDTOs);
         return productConsumptionDTOs;
+    }
+
+    @Override
+    public ProductConsumptionDTO getProductInOrder(ProductOrderDTO productOrderDTO) {
+        String resourceUrl = "http://localhost:8083/api/products/history/product-order";
+        HttpEntity<ProductOrderDTO> request = new HttpEntity<>(productOrderDTO);
+        ResponseEntity<ProductConsumptionDTO> responseEntity = restTemplate.exchange(
+                resourceUrl,
+                HttpMethod.POST,
+                request,
+                ProductConsumptionDTO.class);
+        return responseEntity.getBody();
+    }
+
+    @Override
+    public void deleteRecord(ProductOrderDTO productOrderDTO) {
+        restTemplate.exchange(
+                "http://localhost:8083/api/products/history/product-order",
+                HttpMethod.DELETE,
+                new HttpEntity<>(productOrderDTO),
+                ProductConsumptionDTO.class);
     }
 
 

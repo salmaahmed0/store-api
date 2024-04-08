@@ -1,4 +1,4 @@
-package com.example.store.model.other;
+package com.example.store.model.productConsumption;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
