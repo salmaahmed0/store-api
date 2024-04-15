@@ -42,8 +42,8 @@ public class StoreServiceImpl implements StoreService {
     public StoreResponseDTO save(StoreRequestDTO storeRequestDTO) {
 
         if(storeRepository.findByName(storeRequestDTO.getName()).isPresent()){
-            log.error("This store is already exist!");
-            throw new ConflictException("This store is already exist!");
+            log.error("This store name is already exist!");
+            throw new ConflictException("This store name is already exist!");
         }
         if(storeRepository.findByPhoneNumber(storeRequestDTO.getPhoneNumber()).isPresent()){
             log.error("This PhoneNumber is already represented to another store!");
@@ -67,6 +67,19 @@ public class StoreServiceImpl implements StoreService {
     public StoreResponseDTO updateStore(StoreResponseDTO storeResponseDTO) {
         Store store = storeRepository.findById(storeResponseDTO.getId())
                 .orElseThrow(() -> new RecordNotFoundException("You can't update not exist store with id: " + storeResponseDTO.getId() ));
+
+        if(!store.getName().equals(storeResponseDTO.getName())){
+            if(storeRepository.findByName(storeResponseDTO.getName()).isPresent()){
+                log.error("This store name is already exist!");
+                throw new ConflictException("This store name is already exist!");
+            }
+        }
+        if(!store.getPhoneNumber().equals(storeResponseDTO.getPhoneNumber())){
+            if(storeRepository.findByPhoneNumber(storeResponseDTO.getPhoneNumber()).isPresent()){
+                log.error("This PhoneNumber is already represented to another store!");
+                throw new ConflictException("This PhoneNumber is already represented to another store!!");
+            }
+        }
         store.setName(storeResponseDTO.getName());
         store.setCity(storeResponseDTO.getCity());
         store.setPhoneNumber(storeResponseDTO.getPhoneNumber());
