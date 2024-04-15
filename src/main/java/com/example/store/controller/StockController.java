@@ -25,12 +25,12 @@ public class StockController {
     }
 
     @PostMapping
-    public String  addStock(@RequestBody @Valid StockRequestDTO stockRequestDTO){
+    public StockResponseDTO  addStock(@RequestBody @Valid StockRequestDTO stockRequestDTO){
         return stockService.save(stockRequestDTO);
     }
 
     @PutMapping
-    public String updateStock(@RequestBody StockResponseDTO stockResponseDTO){
+    public StockResponseDTO updateStock(@RequestBody StockResponseDTO stockResponseDTO){
         return stockService.updateStock(stockResponseDTO);
     }
 
@@ -40,8 +40,8 @@ public class StockController {
     }
 
     @DeleteMapping("/{stockId}")
-    public String deleteStock(@PathVariable long stockId){
-        return stockService.deleteStock(stockId);
+    public void deleteStock(@PathVariable long stockId){
+        stockService.deleteStock(stockId);
     }
 
     @PostMapping("/validate-products")

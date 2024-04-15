@@ -58,7 +58,7 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
-    public String save(StockRequestDTO stockRequestDTO) {
+    public StockResponseDTO save(StockRequestDTO stockRequestDTO) {
 
         if(!storeRepository.findById(stockRequestDTO.getStoreId()).isPresent()){
             throw new RecordNotFoundException("You can't add stock in store with id: " + stockRequestDTO.getStoreId() + ", it's not exist!");
@@ -66,15 +66,14 @@ public class StockServiceImpl implements StockService {
 
         Stock stock = stockMapper.toEntity(stockRequestDTO);
         List<Stock> stocks = stock.getStore().getStocks();
-        stockRepository.save(stock);
+        stock = stockRepository.save(stock);
         stocks.add(stock);
         log.info("stock saved: "+ stock);
-
-        return "New Stock added";
+        return stockMapper.toDTO(stock);
     }
 
     @Override
-    public String updateStock(StockResponseDTO stockResponseDTO) {
+    public StockResponseDTO updateStock(StockResponseDTO stockResponseDTO) {
         Stock stock = stockRepository.findById(stockResponseDTO.getStockId())
                 .orElseThrow(()-> new RecordNotFoundException("You can't update stock not exist with id: "+ stockResponseDTO.getStockId()));
         stock.setProductCode(stockResponseDTO.getProductCode());
@@ -87,16 +86,15 @@ public class StockServiceImpl implements StockService {
                         stockResponseDTO.getStockId() +
                         " Not found, you can't add stock on it"));
         stock.setStore(store);
-        stockRepository.save(stock);
-        return "Stock with id: " + stockResponseDTO.getStockId() + " updated Successfully!";
+        stock = stockRepository.save(stock);
+        return stockMapper.toDTO(stock);
     }
 
     @Override
-    public String deleteStock(long id) {
+    public void deleteStock(long id) {
         Stock stock = stockRepository.findById(id)
                 .orElseThrow(()-> new RecordNotFoundException("Stock with id: " + id + " not found, you can't delete it!"));
         stockRepository.delete(stock);
-        return "Stock with id: "+ id + " deleted successfully!";
     }
 
     @Override

@@ -24,7 +24,7 @@ public class StoreController {
     }
 
     @PostMapping
-    public String createStore(@RequestBody @Valid StoreRequestDTO storeRequestDTO){
+    public StoreResponseDTO createStore(@RequestBody  StoreRequestDTO storeRequestDTO){
         return storeService.save(storeRequestDTO);
     }
 
@@ -34,13 +34,13 @@ public class StoreController {
     }
 
     @PutMapping
-    public String updateStore(@RequestBody StoreResponseDTO storeResponseDTO){
+    public StoreResponseDTO updateStore(@RequestBody StoreResponseDTO storeResponseDTO){
         return storeService.updateStore(storeResponseDTO);
     }
 
     @DeleteMapping("/{storeId}")
-    public String deleteStore(@PathVariable long storeId){
-        return storeService.deleteStore(storeId);
+    public void deleteStore(@PathVariable long storeId){
+         storeService.deleteStore(storeId);
     }
 
 }

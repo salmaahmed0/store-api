@@ -39,7 +39,7 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
-    public String save(StoreRequestDTO storeRequestDTO) {
+    public StoreResponseDTO save(StoreRequestDTO storeRequestDTO) {
 
         if(storeRepository.findByName(storeRequestDTO.getName()).isPresent()){
             log.error("This store is already exist!");
@@ -50,9 +50,9 @@ public class StoreServiceImpl implements StoreService {
             throw new ConflictException("This PhoneNumber is already represented to another store!!");
         }
         Store store = storeMapper.toEntity(storeRequestDTO);
-        storeRepository.save(store);
+        store = storeRepository.save(store);
         log.info("New Store Created!");
-        return "New Store Created!";
+        return storeMapper.toDTO(store);
     }
 
     @Override
@@ -64,21 +64,21 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
-    public String updateStore(StoreResponseDTO storeResponseDTO) {
+    public StoreResponseDTO updateStore(StoreResponseDTO storeResponseDTO) {
         Store store = storeRepository.findById(storeResponseDTO.getId())
                 .orElseThrow(() -> new RecordNotFoundException("You can't update not exist store with id: " + storeResponseDTO.getId() ));
         store.setName(storeResponseDTO.getName());
         store.setCity(storeResponseDTO.getCity());
         store.setPhoneNumber(storeResponseDTO.getPhoneNumber());
-        storeRepository.save(store);
-        return "Store with id: " + storeResponseDTO.getId() + ", updated successfully!";
+        store = storeRepository.save(store);
+        return storeMapper.toDTO(store);
     }
 
     @Override
-    public String deleteStore(long id) {
+    public void deleteStore(long id) {
         Store store = storeRepository.findById(id)
                 .orElseThrow(() -> new RecordNotFoundException("You can't delete not exist store with id: " + id));
         storeRepository.delete(store);
-        return "Store with id: " + id + ", deleted successfully!";
+
     }
 }

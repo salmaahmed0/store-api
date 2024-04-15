@@ -12,11 +12,11 @@ public interface StockService {
     List<StockResponseDTO> findAll();
     List<StockResponseDTO> findAllByProductCodeContainingIgnoreCase(String productCode);
 
-    String save(StockRequestDTO stockRequestDTO);
+    StockResponseDTO save(StockRequestDTO stockRequestDTO);
 
-    String updateStock(StockResponseDTO stockResponseDTO);
+    StockResponseDTO updateStock(StockResponseDTO stockResponseDTO);
 
-    String deleteStock(long id);
+    void deleteStock(long id);
 
     List<ValidateProductResponseDTO> validateProducts(List<ValidateProductRequestDTO> productDTOS);
 
