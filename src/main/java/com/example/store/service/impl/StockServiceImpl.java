@@ -83,7 +83,7 @@ public class StockServiceImpl implements StockService {
 
         Store store = storeRepository.findById(stockResponseDTO.getStoreId())
                 .orElseThrow(()-> new RecordNotFoundException("Store with id: " +
-                        stockResponseDTO.getStockId() +
+                        stockResponseDTO.getStoreId() +
                         " Not found, you can't add stock on it"));
         stock.setStore(store);
         stock = stockRepository.save(stock);

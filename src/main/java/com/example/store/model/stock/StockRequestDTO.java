@@ -2,6 +2,7 @@ package com.example.store.model.stock;
 
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,6 +11,7 @@ import java.time.LocalDate;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class StockRequestDTO {
     @NotBlank(message = "product code is mandatory")
     private String productCode;
