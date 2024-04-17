@@ -53,7 +53,9 @@ public class ProductConsumptionServiceImpl implements ProductConsumptionService 
     }
 
     @Override
-    public ProductConsumptionDTO getProductInOrder(ProductOrderDTO productOrderDTO) {
+    public ProductConsumptionDTO getProductInOrder(String productCode, String orderCode) {
+        ProductOrderDTO productOrderDTO = new ProductOrderDTO(productCode, orderCode);
+        log.info("productOrderDTO: "+ productOrderDTO);
         String resourceUrl = "http://localhost:8083/api/products/history/product-order";
         HttpEntity<ProductOrderDTO> request = new HttpEntity<>(productOrderDTO);
         ResponseEntity<ProductConsumptionDTO> responseEntity = restTemplate.exchange(
@@ -61,6 +63,7 @@ public class ProductConsumptionServiceImpl implements ProductConsumptionService 
                 HttpMethod.POST,
                 request,
                 ProductConsumptionDTO.class);
+        log.info("productConsumption: " + responseEntity.getBody());
         return responseEntity.getBody();
     }
 

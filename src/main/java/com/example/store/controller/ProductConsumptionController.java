@@ -25,8 +25,9 @@ public class ProductConsumptionController {
         return productConsumptionService.getProductConsumptions(code);
     }
     @GetMapping("/product-order")
-    public ProductConsumptionDTO getProductOrder(@RequestBody ProductOrderDTO productOrderDTO){
-        return productConsumptionService.getProductInOrder(productOrderDTO);
+    public ProductConsumptionDTO getProductOrder(@RequestParam("productCode") String productCode,
+                                                 @RequestParam("orderCode") String orderCode){
+        return productConsumptionService.getProductInOrder(productCode, orderCode);
     }
 
     @GetMapping("/order-product")
