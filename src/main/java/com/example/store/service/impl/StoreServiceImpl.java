@@ -25,41 +25,33 @@ public class StoreServiceImpl implements StoreService {
 
     @Override
     public List<StoreResponseDTO> findAll() {
-
-        List<StoreResponseDTO> storeResponseDTOS = storeRepository.findAll()
+        return storeRepository.findAll()
                 .stream()
                 .map(storeMapper::toDTO)
                 .collect(Collectors.toList());
-
-        if(storeResponseDTOS.isEmpty()){
-            log.error("There is no stores exist!");
-            throw new RecordNotFoundException("There is no stores exist!");
-        }
-        return storeResponseDTOS;
     }
 
     @Override
     public StoreResponseDTO save(StoreRequestDTO storeRequestDTO) {
 
         if(storeRepository.findByName(storeRequestDTO.getName()).isPresent()){
-            log.error("This store name is already exist!");
-            throw new ConflictException("This store name is already exist!");
+            log.error("Store with name {} is already exist!", storeRequestDTO.getName());
+            throw new ConflictException("Store name is already exist!");
         }
         if(storeRepository.findByPhoneNumber(storeRequestDTO.getPhoneNumber()).isPresent()){
-            log.error("This PhoneNumber is already represented to another store!");
+            log.error("PhoneNumber {} is already represented to another store!!!", storeRequestDTO.getPhoneNumber());
             throw new ConflictException("This PhoneNumber is already represented to another store!!");
         }
         Store store = storeMapper.toEntity(storeRequestDTO);
         store = storeRepository.save(store);
-        log.info("New Store Created!");
+        log.info("Store {} Created!", store);
         return storeMapper.toDTO(store);
     }
 
     @Override
     public StoreResponseDTO findByName(String storeName) {
         Store store = storeRepository.findByName(storeName)
-                .orElseThrow(() -> new RecordNotFoundException("Store with name " + storeName + " Not FOUND!"));
-
+                .orElseThrow(() -> new RecordNotFoundException("Store with name " + storeName + "is Not FOUND!"));
         return storeMapper.toDTO(store);
     }
 
@@ -70,13 +62,13 @@ public class StoreServiceImpl implements StoreService {
 
         if(!store.getName().equals(storeResponseDTO.getName())){
             if(storeRepository.findByName(storeResponseDTO.getName()).isPresent()){
-                log.error("This store name is already exist!");
+                log.error("Store with name {} is already exist!", storeResponseDTO.getName());
                 throw new ConflictException("This store name is already exist!");
             }
         }
         if(!store.getPhoneNumber().equals(storeResponseDTO.getPhoneNumber())){
             if(storeRepository.findByPhoneNumber(storeResponseDTO.getPhoneNumber()).isPresent()){
-                log.error("This PhoneNumber is already represented to another store!");
+                log.error("PhoneNumber {} is already represented to another store!" , storeResponseDTO.getPhoneNumber());
                 throw new ConflictException("This PhoneNumber is already represented to another store!!");
             }
         }
@@ -94,4 +86,5 @@ public class StoreServiceImpl implements StoreService {
         storeRepository.delete(store);
 
     }
+
 }

@@ -12,11 +12,11 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/stores")
+@RequestMapping("/stores")
 public class StoreController {
 
     @Autowired
-    StoreService storeService;
+    private StoreService storeService;
 
     @GetMapping
     public List<StoreResponseDTO> getStores(){
@@ -24,7 +24,7 @@ public class StoreController {
     }
 
     @PostMapping
-    public StoreResponseDTO createStore(@RequestBody  StoreRequestDTO storeRequestDTO){
+    public StoreResponseDTO createStore(@RequestBody @Valid StoreRequestDTO storeRequestDTO){
         return storeService.save(storeRequestDTO);
     }
 
@@ -34,7 +34,7 @@ public class StoreController {
     }
 
     @PutMapping
-    public StoreResponseDTO updateStore(@RequestBody StoreResponseDTO storeResponseDTO){
+    public StoreResponseDTO updateStore(@RequestBody @Valid StoreResponseDTO storeResponseDTO){
         return storeService.updateStore(storeResponseDTO);
     }
 

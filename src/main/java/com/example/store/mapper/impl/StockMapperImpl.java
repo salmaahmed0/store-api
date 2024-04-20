@@ -23,32 +23,24 @@ public class StockMapperImpl implements StockMapper {
 
     @Override
     public Stock toEntity(StockRequestDTO stockRequestDTO) {
-
-        Stock stock = new Stock();
-        stock.setProductCode(stockRequestDTO.getProductCode());
-        stock.setQuantity(stockRequestDTO.getQuantity());
-        stock.setConsumedQuantity(0);
-
-        Store store= storeRepository.findById(stockRequestDTO.getStoreId()).orElse(null);
-        stock.setStore(store);
-
-        LocalDate date = LocalDate.now();
-        stock.setCreationDate(date);
-
-        return stock;
+        return Stock.builder()
+                .creationDate(LocalDate.now())
+                .consumedQuantity(0)
+                .quantity(stockRequestDTO.getQuantity())
+                .productCode(stockRequestDTO.getProductCode())
+                .store(storeRepository.findById(stockRequestDTO.getStoreId()).orElse(null))
+                .build();
     }
 
     @Override
     public StockResponseDTO toDTO(Stock stock) {
-
-        StockResponseDTO stockResponseDTO = new StockResponseDTO();
-        stockResponseDTO.setStockId(stock.getId());
-        stockResponseDTO.setQuantity(stock.getQuantity());
-        stockResponseDTO.setProductCode(stock.getProductCode());
-        stockResponseDTO.setStoreId(stock.getStore().getId());
-        stockResponseDTO.setCreationDate(stock.getCreationDate());
-        stockResponseDTO.setConsumedQuantity(stock.getConsumedQuantity());
-
-        return stockResponseDTO;
+        return StockResponseDTO.builder()
+                .stockId(stock.getId())
+                .creationDate(stock.getCreationDate())
+                .consumedQuantity(stock.getConsumedQuantity())
+                .storeId(stock.getStore().getId())
+                .quantity(stock.getQuantity())
+                .productCode(stock.getProductCode())
+                .build();
     }
 }

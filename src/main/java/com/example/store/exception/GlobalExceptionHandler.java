@@ -34,4 +34,16 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.CONFLICT);
     }
 
+    @ExceptionHandler(DataNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<ErrorDetails> handleDataNotValidException(DataNotValidException ex){
+
+        ErrorDetails error = new ErrorDetails();
+        error.setStatus(HttpStatus.CONFLICT.value());
+        error.setMessage(ex.getMessage());
+        error.setTimeStamp(System.currentTimeMillis());
+
+        return new ResponseEntity<>(error, HttpStatus.CONFLICT);
+    }
+
 }

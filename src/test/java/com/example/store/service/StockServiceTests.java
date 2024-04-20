@@ -2,15 +2,12 @@ package com.example.store.service;
 
 import com.example.store.entity.Stock;
 import com.example.store.entity.Store;
-import com.example.store.exception.ConflictException;
 import com.example.store.exception.RecordNotFoundException;
 import com.example.store.mapper.StockMapper;
 import com.example.store.model.stock.StockRequestDTO;
 import com.example.store.model.stock.StockResponseDTO;
-import com.example.store.model.store.StoreRequestDTO;
-import com.example.store.model.store.StoreResponseDTO;
-import com.example.store.model.validation.ValidateProductRequestDTO;
-import com.example.store.model.validation.ValidateProductResponseDTO;
+import com.example.store.model.validation.ProductValidationRequestDTO;
+import com.example.store.model.validation.ProductValidateResponseDTO;
 import com.example.store.repository.StockRepository;
 import com.example.store.repository.StoreRepository;
 import com.example.store.service.impl.StockServiceImpl;
@@ -20,7 +17,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -61,7 +57,7 @@ public class StockServiceTests {
         when(stockMapper.toDTO(stock)).thenReturn(stockResponse);
 
         // Act
-        StockResponseDTO savedStockResponse = stockService.save(StockRequestDTO.builder()
+        StockResponseDTO savedStockResponse = stockService.createNewStock(StockRequestDTO.builder()
                 .quantity(100).productCode("2222").storeId(store.getId()).build());
 
         // Assert
@@ -77,7 +73,7 @@ public class StockServiceTests {
         // Act
         RecordNotFoundException ex = assertThrows(
                 RecordNotFoundException.class,
-                () -> stockService.save(
+                () -> stockService.createNewStock(
                         StockRequestDTO.builder().productCode("2222").quantity(10).storeId(1L).build()
                 ));
         // Assert
@@ -119,12 +115,12 @@ public class StockServiceTests {
         // Arrange
         Store store = Store.builder().id(1L)
                 .stocks(new ArrayList<>()).name("store").city("cairo").phoneNumber("01010187876").build();
-        when(stockRepository.findAllByProductCodeContainingIgnoreCase("2222")).thenReturn(Arrays.asList(
+        when(stockRepository.findStockByProductCodeContainingIgnoreCase("2222")).thenReturn(Arrays.asList(
                 Stock.builder().creationDate(LocalDate.now()).consumedQuantity(10).quantity(100).productCode("2222").store(store).build(),
                 Stock.builder().creationDate(LocalDate.now()).consumedQuantity(10).quantity(100).productCode("2222").store(store).build()
         ));
         // Act
-        List<StockResponseDTO> stocks = stockService.findAllByProductCodeContainingIgnoreCase("2222");
+        List<StockResponseDTO> stocks = stockService.findStocksByProductCode("2222");
         // assert
         assertThat(stocks.size()).isEqualTo(2);
     }
@@ -132,11 +128,11 @@ public class StockServiceTests {
     @Test
     public void stockServiceFindByProductCodeThrowExceptionIfNoMatches(){
         // Arrange
-        when(stockRepository.findAllByProductCodeContainingIgnoreCase("2222")).thenReturn(Collections.emptyList());
+        when(stockRepository.findStockByProductCodeContainingIgnoreCase("2222")).thenReturn(Collections.emptyList());
         // Act
         RecordNotFoundException ex = assertThrows(
                 RecordNotFoundException.class,
-                () -> stockService.findAllByProductCodeContainingIgnoreCase("2222")
+                () -> stockService.findStocksByProductCode("2222")
         );
         // Assert
         assertThat(ex.getMessage()).isEqualTo("No matched stock with productCode: 2222");
@@ -248,10 +244,10 @@ public class StockServiceTests {
 
     @Test
     public void validateProductsAndReturnValidateProductResponseDTO(){
-        ValidateProductRequestDTO validateProductRequest = ValidateProductRequestDTO.builder()
+        ProductValidationRequestDTO validateProductRequest = ProductValidationRequestDTO.builder()
                 .productCode("2222")
                 .quantity(2).build();
-        ValidateProductRequestDTO validateProductRequest2 = ValidateProductRequestDTO.builder()
+        ProductValidationRequestDTO validateProductRequest2 = ProductValidationRequestDTO.builder()
                 .productCode("1234")
                 .quantity(2).build();
         Store store = Store.builder().id(1L)
@@ -266,7 +262,7 @@ public class StockServiceTests {
         ));
 
         // Act
-        List<ValidateProductResponseDTO> responseDTOS = stockService.validateProducts(Arrays.asList(
+        List<ProductValidateResponseDTO> responseDTOS = stockService.validateProducts(Arrays.asList(
                 validateProductRequest, validateProductRequest2
         ));
         // assert
@@ -276,10 +272,10 @@ public class StockServiceTests {
 
     @Test
     public void validateProductsWhenStocksIsEmpty(){
-        ValidateProductRequestDTO validateProductRequest = ValidateProductRequestDTO.builder()
+        ProductValidationRequestDTO validateProductRequest = ProductValidationRequestDTO.builder()
                 .productCode("2222")
                 .quantity(2).build();
-        ValidateProductRequestDTO validateProductRequest2 = ValidateProductRequestDTO.builder()
+        ProductValidationRequestDTO validateProductRequest2 = ProductValidationRequestDTO.builder()
                 .productCode("1234")
                 .quantity(2).build();
         Store store = Store.builder().id(1L)
@@ -292,7 +288,7 @@ public class StockServiceTests {
         when(stockService.getListOfStocksThatContainsProduct(validateProductRequest)).thenReturn(Collections.emptyList());
 
         // Act
-        List<ValidateProductResponseDTO> responseDTOS = stockService.validateProducts(Arrays.asList(
+        List<ProductValidateResponseDTO> responseDTOS = stockService.validateProducts(Arrays.asList(
                 validateProductRequest, validateProductRequest2
         ));
         // assert
@@ -309,11 +305,11 @@ public class StockServiceTests {
         Stock stock2 = Stock.builder().creationDate(LocalDate.now()).consumedQuantity(10)
                 .quantity(100).productCode("2222").store(store).build();
 
-        when(stockRepository.findAllByProductCodeContainingIgnoreCase("2222")).thenReturn(Arrays.asList(stock, stock2));
+        when(stockRepository.findStockByProductCodeContainingIgnoreCase("2222")).thenReturn(Arrays.asList(stock, stock2));
 
         // Act
         List<Stock> stocks = stockService.getListOfStocksThatContainsProduct(
-                ValidateProductRequestDTO.builder().quantity(10).productCode("2222").build()
+                ProductValidationRequestDTO.builder().quantity(10).productCode("2222").build()
         );
         // Assert
         assertThat(stocks.size()).isEqualTo(2);

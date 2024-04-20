@@ -1,7 +1,7 @@
 package com.example.store.controller;
 
-import com.example.store.model.validation.ValidateProductRequestDTO;
-import com.example.store.model.validation.ValidateProductResponseDTO;
+import com.example.store.model.validation.ProductValidationRequestDTO;
+import com.example.store.model.validation.ProductValidateResponseDTO;
 import com.example.store.model.stock.StockRequestDTO;
 import com.example.store.model.stock.StockResponseDTO;
 import com.example.store.service.StockService;
@@ -14,7 +14,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/stocks")
+@RequestMapping("/stocks")
 public class StockController {
     @Autowired
     StockService stockService;
@@ -25,18 +25,18 @@ public class StockController {
     }
 
     @PostMapping
-    public StockResponseDTO  addStock(@RequestBody @Valid StockRequestDTO stockRequestDTO){
-        return stockService.save(stockRequestDTO);
+    public StockResponseDTO addStock(@RequestBody @Valid StockRequestDTO stockRequestDTO){
+        return stockService.createNewStock(stockRequestDTO);
     }
 
     @PutMapping
-    public StockResponseDTO updateStock(@RequestBody StockResponseDTO stockResponseDTO){
+    public StockResponseDTO updateStock(@RequestBody @Valid StockResponseDTO stockResponseDTO){
         return stockService.updateStock(stockResponseDTO);
     }
 
     @GetMapping("/{productCode}")
     public List<StockResponseDTO> searchProduct(@PathVariable String productCode){
-        return stockService.findAllByProductCodeContainingIgnoreCase(productCode);
+        return stockService.findStocksByProductCode(productCode);
     }
 
     @DeleteMapping("/{stockId}")
@@ -45,13 +45,14 @@ public class StockController {
     }
 
     @PostMapping("/validate-products")
-    public List<ValidateProductResponseDTO> validateProducts(@RequestBody @Valid List<ValidateProductRequestDTO> productDTOS){
+    public List<ProductValidateResponseDTO> validateProducts(@RequestBody @Valid List<ProductValidationRequestDTO> productDTOS){
         return stockService.validateProducts(productDTOS);
     }
 
-    @PostMapping("/consume")
-    public String consumeStock(@RequestBody @Valid List<ValidateProductRequestDTO> productDTOS){
-        return stockService.consumeProductsFromStocks(productDTOS)? "Products consumed from stock" : "Not valid products";
+    @PostMapping("/consume-products")
+    public String consumeStock(@RequestBody @Valid List<ProductValidationRequestDTO> productDTOS){
+        log.info("in controller");
+        return stockService.checkProductsValidationAndConsume(productDTOS);
     }
 
 

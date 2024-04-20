@@ -1,8 +1,7 @@
 package com.example.store.controller;
 
+import com.example.store.RestTemplateClient;
 import com.example.store.model.productConsumption.ProductConsumptionDTO;
-import com.example.store.model.productConsumption.ProductOrderDTO;
-import com.example.store.service.ProductConsumptionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -11,27 +10,25 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("api/consumptions")
+@RequestMapping("/products-history")
 public class ProductConsumptionController {
     @Autowired
-    ProductConsumptionService productConsumptionService;
+    RestTemplateClient restTemplateClient;
 
     @GetMapping
     public List<ProductConsumptionDTO> getAllConsumptions(){
-        return productConsumptionService.getAllConsumptions();
-    }
-    @GetMapping("/{code}")
-    public List<ProductConsumptionDTO> getProductConsumptions(@PathVariable String code){
-        return productConsumptionService.getProductConsumptions(code);
-    }
-    @GetMapping("/product-order")
-    public ProductConsumptionDTO getProductOrder(@RequestParam("productCode") String productCode,
-                                                 @RequestParam("orderCode") String orderCode){
-        return productConsumptionService.getProductInOrder(productCode, orderCode);
+        return restTemplateClient.getProductsConsumptions();
     }
 
-    @GetMapping("/order-product")
-    public void deleteProductConsumptionRecord(@RequestBody ProductOrderDTO productOrderDTO){
-        productConsumptionService.deleteRecord(productOrderDTO);
+    @GetMapping("/{productCode}")
+    public List<ProductConsumptionDTO> getProductConsumptions(@PathVariable String productCode){
+        return restTemplateClient.getProductConsumptionsByProductCode(productCode);
     }
+
+    @GetMapping("/by-productCode-and-orderCode")
+    public ProductConsumptionDTO getProductConsumptionsInOrder(@RequestParam("productCode") String productCode,
+                                                 @RequestParam("orderCode") String orderCode){
+        return restTemplateClient.getProductsConsumptionsByProductCodeAndOrderCode(productCode, orderCode);
+    }
+
 }
