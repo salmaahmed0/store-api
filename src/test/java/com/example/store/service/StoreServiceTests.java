@@ -165,7 +165,7 @@ public class StoreServiceTests {
         when(storeRepository.findById(store.getId())).thenReturn(Optional.of(store));
         doNothing().when(storeRepository).delete(store);
         // Act
-        storeService.deleteStore(store.getId());
+        storeService.deleteStore(store.getName());
         // Assert
         verify(storeRepository).delete(store);
     }
@@ -178,7 +178,7 @@ public class StoreServiceTests {
         // Act
         RecordNotFoundException ex = assertThrows(
                 RecordNotFoundException.class,
-                () -> storeService.deleteStore(store.getId())
+                () -> storeService.deleteStore(store.getName())
         );
         // Assert
         assertThat(ex.getMessage()).isEqualTo("You can't delete not exist store with id: " + store.getId());

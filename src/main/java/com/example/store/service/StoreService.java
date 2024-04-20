@@ -11,6 +11,6 @@ public interface StoreService {
     StoreResponseDTO save(StoreRequestDTO storeRequestDTO);
     StoreResponseDTO findByName(String storeName);
     StoreResponseDTO updateStore(StoreResponseDTO storeResponseDTO);
-    void deleteStore(long id);
+    void deleteStore(String storeName);
 
 }

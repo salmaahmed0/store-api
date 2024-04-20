@@ -51,7 +51,7 @@ public class StoreServiceImpl implements StoreService {
     @Override
     public StoreResponseDTO findByName(String storeName) {
         Store store = storeRepository.findByName(storeName)
-                .orElseThrow(() -> new RecordNotFoundException("Store with name " + storeName + "is Not FOUND!"));
+                .orElseThrow(() -> new RecordNotFoundException("Store with name " + storeName + " is Not FOUND!"));
         return storeMapper.toDTO(store);
     }
 
@@ -80,9 +80,9 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
-    public void deleteStore(long id) {
-        Store store = storeRepository.findById(id)
-                .orElseThrow(() -> new RecordNotFoundException("You can't delete not exist store with id: " + id));
+    public void deleteStore(String storeName) {
+        Store store = storeRepository.findByName(storeName)
+                .orElseThrow(() -> new RecordNotFoundException("Store with name " + storeName + " not exist, you can't delete it"));
         storeRepository.delete(store);
 
     }

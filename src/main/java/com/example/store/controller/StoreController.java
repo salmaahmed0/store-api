@@ -38,9 +38,9 @@ public class StoreController {
         return storeService.updateStore(storeResponseDTO);
     }
 
-    @DeleteMapping("/{storeId}")
-    public void deleteStore(@PathVariable long storeId){
-         storeService.deleteStore(storeId);
+    @DeleteMapping("/{storeName}")
+    public void deleteStore(@PathVariable String storeName){
+         storeService.deleteStore(storeName);
     }
 
 }
