@@ -16,9 +16,10 @@
 
 # Test the API here:
 - [Swagger UI](http://localhost:8080/swagger-ui/index.html)
-<a href="postman.com/interstellar-capsule-619026/workspace/store-api">
-	<img alt="Run in Postman" src="https://run.pstmn.io/button.svg">
-</a>
+
+<a href="https://god.gw.postman.com/run-collection/31712037-c8af7245-e920-4769-9edb-349bd5b4118d?action=collection%2Ffork&source=rip_markdown">
+  <img alt="Run in Postman" src="https://run.pstmn.io/button.svg">
+  </a>
 
 # ERD
 ```mermaid
